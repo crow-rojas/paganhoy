@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Pagan Hoy?</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            color: #2255ff;
+            font-size: 48px;
+        }
+        p {
+            font-size: 32px;
+            color: #ff4422;
+        }
+        img {
+            max-width: 50%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .github-icon {
+          position: center;
+          bottom: 20px;
+          right: 20px;
+          width: 50%; 
+          height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>¿Pagan Hoy? 🤑</h1>
+        <p id="answer"></p>
+        <img id="payImg" src="" alt="Payment Status Image">
+    </div>
+    <a href="https://github.com/crow-rojas/paganhoy" target="_blank" class="github-icon">
+        <img src="github-mark.png" alt="Github Repo" style="width: 48px; height: 48px;">
+    </a>
+
+    <script>
+        const paymentDates = new Set([
+            '2024-01-29', '2024-02-27', '2024-03-26', '2024-04-26',
+            '2024-05-29', '2024-06-26', '2024-07-29', '2024-08-28',
+            '2024-09-26', '2024-10-29', '2024-11-27', '2024-12-26'
+        ]);
+
+        const today = new Date().toISOString().slice(0, 10);
+
+        if (paymentDates.has(today)) {
+            document.getElementById("answer").innerHTML = "¡Sí! Hoy pagan. 🎉";
+            document.getElementById("payImg").src = "fokin_pagaron.jpeg";
+        } else {
+            document.getElementById("answer").innerHTML = "No, hoy no pagan. 😞";
+            document.getElementById("payImg").src = "cuando_fokin_pagan.jpeg";
+        }
+    </script>
+</body>
+</html>
