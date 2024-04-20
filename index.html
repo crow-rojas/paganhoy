@@ -52,20 +52,32 @@
     </a>
 
     <script>
-        const paymentDates = new Set([
+        const paymentDates = {
+            "cl": [
             '2024-01-29', '2024-02-27', '2024-03-26', '2024-04-26',
             '2024-05-29', '2024-06-26', '2024-07-29', '2024-08-28',
             '2024-09-26', '2024-10-29', '2024-11-27', '2024-12-26'
-        ]);
-
-        const today = new Date().toISOString().slice(0, 10);
-
-        if (paymentDates.has(today)) {
-            document.getElementById("answer").innerHTML = "¡Sí! Hoy pagan. 🎉";
-            document.getElementById("payImg").src = "fokin_pagaron.jpeg";
-        } else {
+            ],
+            "col": [
+            '2024-01-29', '2024-02-28', '2024-03-26', '2024-04-26',
+            '2024-05-29', '2024-06-26', '2024-07-29', '2024-08-28',
+            '2024-09-26', '2024-10-29', '2024-11-27', '2024-12-20','2024-12-26'
+            ]
+        };
+        countries_where_will_pay = []
+        for (let country in paymentDates) {            
+            const today = new Date().toISOString().slice(0, 10);
+            
+            if (paymentDates[country].includes(today)) {
+                countries_where_will_pay.push(country)
+            }
+        }
+        if(countries_where_will_pay.length===0){
             document.getElementById("answer").innerHTML = "No, hoy no pagan. 😞";
             document.getElementById("payImg").src = "cuando_fokin_pagan.jpeg";
+        }else{
+            document.getElementById("answer").innerHTML = `¡Sí! Hoy pagan en ${countries_where_will_pay.join(", ")}. 🎉`;
+            document.getElementById("payImg").src = "fokin_pagaron.jpeg";
         }
     </script>
 </body>
