@@ -1,84 +1,300 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>¿Pagan Hoy?</title>
-    <link rel="icon" type="image/png" href="logo.png">
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: 'Comic Sans MS', 'Arial', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        h1 {
-            color: #2255ff;
-            font-size: 48px;
-        }
-        p {
-            font-size: 32px;
-            color: #ff4422;
-        }
-        img {
-            max-width: 50%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .github-icon {
-          position: center;
-          bottom: 20px;
-          right: 20px;
-          width: 50%; 
-          height: auto;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        <h1>¿Pagan Hoy? 🤑</h1>
-        <p id="answer"></p>
-        <img id="payImg" src="" alt="Payment Status Image">
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>¿Pagan Hoy? 🤑</h1>
+      <p id="answer"></p>
     </div>
-    <a href="https://github.com/crow-rojas/paganhoy" target="_blank" class="github-icon">
-        <img src="github-mark.png" alt="Github Repo" style="width: 48px; height: 48px;">
-    </a>
 
     <script>
-        const paymentDates = {
-            "cl": [
-            '2024-01-29', '2024-02-27', '2024-03-26', '2024-04-26',
-            '2024-05-29', '2024-06-26', '2024-07-29', '2024-08-28',
-            '2024-09-26', '2024-10-29', '2024-11-27', '2024-12-26'
-            ],
-            "col": [
-            '2024-01-29', '2024-02-28', '2024-03-26', '2024-04-26',
-            '2024-05-29', '2024-06-26', '2024-07-29', '2024-08-28',
-            '2024-09-26', '2024-10-29', '2024-11-27', '2024-12-20','2024-12-26'
-            ]
-        };
-        countries_where_will_pay = []
-        for (let country in paymentDates) {            
-            const today = new Date().toISOString().slice(0, 10);
-            
-            if (paymentDates[country].includes(today)) {
-                countries_where_will_pay.push(country)
+      let confettiInterval; // Variable global para el intervalo del confeti
+
+      async function checkPayments() {
+        try {
+          const response = await fetch("payment-dates.json");
+          const data = await response.json();
+          const { paymentDates } = data;
+
+          const countries_where_will_pay = [];
+          const countries_where_not_pay = [];
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = today.getMonth() + 1;
+          const day = today.getDate();
+
+          for (let countryCode in paymentDates) {
+            const country = paymentDates[countryCode];
+            if (country.dates[year]?.[month]?.includes(day)) {
+              countries_where_will_pay.push({ code: countryCode, ...country });
+            } else if (country.dates[year]) {
+              countries_where_not_pay.push({ code: countryCode, ...country });
             }
+          }
+
+          let message = "";
+          let sadMessage = "";
+
+          if (countries_where_will_pay.length === 0) {
+            message = "No, hoy no pagan en ningún país. 😞";
+            const sadImg = document.createElement("img");
+            sadImg.id = "payImg";
+            sadImg.src = "cuando_fokin_pagan.jpeg";
+            sadImg.alt = "Payment Status Image";
+            document.querySelector("div").appendChild(sadImg);
+          } else {
+            const payingCountries = countries_where_will_pay
+              .map((c) => `${c.name} ${c.emoji}`)
+              .join(", ");
+
+            message = `¡Sí! Hoy pagan en ${payingCountries}. 🎉`;
+
+            // Crear contenedor para las imágenes y música
+            const celebrationContainer = document.createElement("div");
+            celebrationContainer.className = "celebration-container";
+
+            // Crear la imagen principal primero
+            const mainImg = document.createElement("img");
+            mainImg.id = "payImg";
+            mainImg.src = "fokin_pagaron.jpeg";
+            mainImg.alt = "Payment Status Image";
+
+            // Agregar botón de música
+            const musicButton = document.createElement("button");
+            musicButton.id = "musicButton";
+            musicButton.className = "music-button";
+            musicButton.innerHTML = `
+              <span class="music-icon">▶️</span>
+              <span class="music-label">¡Presióname para celebrar!</span>
+            `;
+
+            // Agregar gatos
+            const leftCat = document.createElement("img");
+            leftCat.id = "leftCat";
+            leftCat.src = "gato.png";
+            leftCat.className = "celebration-cat";
+
+            const rightCat = document.createElement("img");
+            rightCat.id = "rightCat";
+            rightCat.src = "gato.png";
+            rightCat.className = "celebration-cat";
+
+            // Agregar audio
+            const audio = document.createElement("audio");
+            audio.id = "celebrationAudio";
+            audio.src = "gato_ql_loco.mp3";
+
+            // Agregar elementos al contenedor en el orden correcto
+            celebrationContainer.appendChild(leftCat);
+            celebrationContainer.appendChild(mainImg);
+            celebrationContainer.appendChild(rightCat);
+
+            // Agregar elementos al DOM
+            const container = document.querySelector("div");
+            container.appendChild(musicButton);
+            container.appendChild(celebrationContainer);
+            container.appendChild(audio);
+
+            // Configurar el botón de música
+            let isPlaying = false;
+            musicButton.addEventListener("click", () => {
+              const audio = document.getElementById("celebrationAudio");
+              const leftCat = document.getElementById("leftCat");
+              const rightCat = document.getElementById("rightCat");
+
+              if (isPlaying) {
+                audio.pause();
+                musicButton.innerHTML = `
+                  <span class="music-icon">▶️</span>
+                  <span class="music-label">¡Presióname para celebrar!</span>
+                `;
+                leftCat.src = "gato.png";
+                rightCat.src = "gato.png";
+                // Detener el confeti
+                if (confettiInterval) {
+                  clearInterval(confettiInterval);
+                  confettiInterval = null;
+                }
+              } else {
+                audio.play();
+                musicButton.innerHTML = `
+                  <span class="music-icon">⏸️</span>
+                  <span class="music-label">Pausar celebración</span>
+                `;
+                leftCat.src = "oiia-oiiaoiia.gif";
+                rightCat.src = "oiia-oiiaoiia.gif";
+                // Iniciar confeti continuo
+                confettiInterval = setInterval(throwConfetti, 50);
+              }
+              isPlaying = !isPlaying;
+            });
+
+            document
+              .getElementById("answer")
+              .classList.add("payment-celebration");
+
+            // Celebración con confeti
+            celebratePayment();
+
+            if (countries_where_not_pay.length > 0) {
+              const notPayingCountries = countries_where_not_pay
+                .map((c) => `${c.name} ${c.emoji}`)
+                .join(", ");
+              sadMessage = `Pero no pagan en ${notPayingCountries} 😢`;
+            }
+          }
+
+          document.getElementById("answer").innerHTML = message;
+
+          // Crear o actualizar el elemento para el mensaje triste
+          let sadMessageElement = document.getElementById("sadAnswer");
+          if (!sadMessageElement) {
+            sadMessageElement = document.createElement("p");
+            sadMessageElement.id = "sadAnswer";
+            document.querySelector("div").appendChild(sadMessageElement);
+          }
+
+          if (sadMessage) {
+            sadMessageElement.innerHTML = sadMessage;
+            // Agregar imagen pequeña de cuando_fokin_pagan
+            let sadImg = document.getElementById("sadImg");
+            if (!sadImg) {
+              sadImg = document.createElement("img");
+              sadImg.id = "sadImg";
+              sadImg.src = "cuando_fokin_pagan.jpeg";
+              sadImg.alt = "Sad Payment Status";
+              sadImg.className = "small-img";
+              document.querySelector("div").appendChild(sadImg);
+            }
+          }
+        } catch (error) {
+          console.error("Error cargando las fechas de pago:", error);
+          document.getElementById("answer").innerHTML =
+            "Error cargando las fechas de pago 😱";
         }
-        if(countries_where_will_pay.length===0){
-            document.getElementById("answer").innerHTML = "No, hoy no pagan. 😞";
-            document.getElementById("payImg").src = "cuando_fokin_pagan.jpeg";
-        }else{
-            document.getElementById("answer").innerHTML = `¡Sí! Hoy pagan en ${countries_where_will_pay.join(", ")}. 🎉`;
-            document.getElementById("payImg").src = "fokin_pagaron.jpeg";
+      }
+
+      // Ejecutar la verificación cuando carga la página
+      checkPayments();
+
+      function findNextPaymentForAllCountries(paymentDates) {
+        const today = new Date();
+        const nextPayments = [];
+
+        for (let countryCode in paymentDates) {
+          const country = paymentDates[countryCode];
+          let nextDate = null;
+
+          for (let year in country.dates) {
+            for (let month in country.dates[year]) {
+              for (let day of country.dates[year][month]) {
+                const paymentDate = new Date(year, month - 1, day);
+                if (
+                  paymentDate > today &&
+                  (!nextDate || paymentDate < nextDate)
+                ) {
+                  nextDate = paymentDate;
+                }
+              }
+            }
+          }
+
+          if (nextDate) {
+            const daysLeft = Math.ceil(
+              (nextDate - today) / (1000 * 60 * 60 * 24)
+            );
+            nextPayments.push({
+              country,
+              date: nextDate,
+              daysLeft,
+            });
+          }
         }
+
+        return nextPayments;
+      }
+
+      function getRandomBrokePhrase(days) {
+        const phrases = [
+          "Mi billetera está más vacía que nevera de estudiante 😭",
+          "Comiendo arroz con imaginación hasta entonces 🍚",
+          "Modo supervivencia activado 🦖",
+          "Mi cuenta bancaria está en modo zen: vacía y en paz 🧘‍♂️",
+          "Buscando monedas en el sofá como deporte extremo 🏃‍♂️",
+          days < 3
+            ? "¡Ya casi! Aguanta mi rey/reina 👑"
+            : "Toca comer aire gourmet 🍽️",
+          days < 5
+            ? "La luz al final del túnel se acerca 🔦"
+            : "Modo ramén instantáneo: ON 🍜",
+          "Mi billetera tiene telarañas 🕸️",
+          "Hasta las tarjetas de crédito tienen miedo 💳",
+          "Mi cuenta está en números más rojos que un tomate 🍅",
+        ];
+        return phrases[Math.floor(Math.random() * phrases.length)];
+      }
+
+      // Agregar función de celebración
+      function celebratePayment() {
+        // Explosión inicial de confeti
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
+        });
+
+        // Intervalo inicial de 3 segundos
+        const animationDuration = 3000;
+        const animationEnd = Date.now() + animationDuration;
+
+        const interval = setInterval(function () {
+          if (Date.now() > animationEnd) {
+            return clearInterval(interval);
+          }
+
+          throwConfetti();
+        }, 50);
+      }
+
+      // Función para lanzar confeti
+      function throwConfetti() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
+        });
+      }
     </script>
-</body>
+
+    <div class="container">
+      <a
+        href="https://github.com/crow-rojas/paganhoy"
+        target="_blank"
+        class="github-icon"
+      >
+        <img
+          src="github-mark.png"
+          alt="Github Repo"
+          style="width: 48px; height: 48px"
+        />
+      </a>
+    </div>
+  </body>
 </html>

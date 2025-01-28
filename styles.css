@@ -1,0 +1,156 @@
+body,
+html {
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  font-family: "Comic Sans MS", "Arial", sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1 {
+  color: #2255ff;
+  font-size: 48px;
+}
+
+p {
+  font-size: 32px;
+  color: #ff4422;
+}
+
+img {
+  max-width: 50%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.github-icon {
+  position: center;
+  bottom: 20px;
+  right: 20px;
+  width: 50%;
+  height: auto;
+}
+
+.small-img {
+  max-width: 25%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+#sadAnswer {
+  font-size: 24px;
+  color: #666;
+  margin-top: 20px;
+}
+
+@keyframes rainbow-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.payment-celebration {
+  background: linear-gradient(
+    45deg,
+    #ff0000 0%,
+    #ff7f00 15%,
+    #ffff00 30%,
+    #00ff00 45%,
+    #0000ff 60%,
+    #4b0082 75%,
+    #8b00ff 90%,
+    #ff0000 100%
+  );
+  background-size: 200% 200%;
+  animation: rainbow-bg 3s ease infinite;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+
+.celebration-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.celebration-cat {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.music-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  margin: 20px auto;
+  width: 100%;
+}
+
+.music-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: #3498db;
+  border-radius: 50%;
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.music-label {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+}
+
+.music-button:hover .music-icon {
+  transform: scale(1.1);
+  background-color: #2980b9;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.music-button:active .music-icon {
+  transform: scale(0.95);
+}
+
+@keyframes shine {
+  0% {
+    background-position: -100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+} 
